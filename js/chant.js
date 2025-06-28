@@ -32,14 +32,38 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function extractGabcScore(chant) {
-        if (!chant.gabc) return '';
-        try {
-            const gabcData = JSON.parse(chant.gabc);
-            const gabcEntry = gabcData.find(entry => entry[0] === 'gabc');
-            return gabcEntry ? gabcEntry[1].trim() : '';
-        } catch (e) { return ''; }
+    // Return early if there's no gabc property
+    if (!chant || !chant.gabc) {
+        return '';
     }
 
+    try {
+        const parsedData = JSON.parse(chant.gabc);
+
+        // CASE 1: The parsed data is an array (your original working case)
+        if (Array.isArray(parsedData)) {
+            const gabcEntry = parsedData.find(entry => Array.isArray(entry) && entry[0] === 'gabc');
+            return gabcEntry ? gabcEntry[1].trim() : '';
+        }
+        // CASE 2: The parsed data is a string (your failing case)
+        else if (typeof parsedData === 'string') {
+            return parsedData.trim();
+        }
+        // If it's something else (e.g., a number, boolean, or object), return empty
+        else {
+            return '';
+        }
+    } catch (e) {
+        // This catch block will now handle cases where chant.gabc is NOT valid JSON at all.
+        // For example, if it's just "(c4) BE...", without the surrounding quotes.
+        // In that situation, we can assume the raw string is what we want.
+        if (typeof chant.gabc === 'string') {
+             return chant.gabc.trim();
+        }
+        console.error("Could not extract GABC score:", e);
+        return '';
+    }
+}
     async function copyTextToClipboard(text, buttonElement, originalButtonText) {
         if (!text) {
             alert('No content available to copy.');
@@ -117,7 +141,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const chantId = chant.id;
         const incipit = chant.incipit || 'chant';
         const rawGabcScore = extractGabcScore(chant);
-
         gregobaseLink.href = `https://gregobase.selapa.net/chant.php?id=${chantId}`;
 
         // This function returns the appropriate GABC score based on the checkbox state.
@@ -152,16 +175,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 cleanGABC.parentElement.style.display = 'inline-block'; // Show checkbox
             }
 
-        } else {
-            // Hide all GABC-related controls if no GABC is available.
-            neumzLink.style.display = 'none';
-            summitLink.style.display = 'none';
-            illuminareLink.style.display = 'none';
-            copyGabcBtn.style.display = 'none';
-            downloadGabcBtn.style.display = 'none';
-            if (cleanGABC.parentElement) {
-                cleanGABC.parentElement.style.display = 'none'; // Hide checkbox
-            }
         }
 
         // SVG Download is unaffected by GABC.
