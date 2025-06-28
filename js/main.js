@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
             allChants = await response.json();
             filterAndSearch();
         } catch (error) {
-            resultsContainer.innerHTML = '<p class="loading-message">Error loading chant database.</p>';
+            resultsContainer.innerHTML = '<p class="loading-message">Erro carregando o banco de dados.</p>';
         }
     }
 
@@ -70,18 +70,30 @@ document.addEventListener('DOMContentLoaded', () => {
         currentPage = 1;
         renderPage();
     }
-
+    function convertToRoman(num) {
+  switch (num) {
+    case '1': return 'I';
+    case '2': return 'II';
+    case '3': return 'III';
+    case '4': return 'IV';
+    case '5': return 'V';
+    case '6': return 'VI';
+    case '7': return 'VII';
+    case '8': return 'VIII';
+    default: return 'N/A'; // Should not be reached with the initial check
+  }
+}
     // --- UPDATED: Rendering Logic with more details ---
     function renderPage() {
         resultsContainer.innerHTML = '';
         const totalPages = Math.ceil(currentFilteredChants.length / itemsPerPage);
-        resultsCount.textContent = `${currentFilteredChants.length} chants found.`;
-        pageInfo.textContent = `Page ${currentPage} of ${totalPages || 1}`;
+        resultsCount.textContent = `${currentFilteredChants.length} cantos encontrados.`;
+        pageInfo.textContent = `Página ${currentPage} de ${totalPages || 1}`;
         prevPageBtn.disabled = currentPage === 1;
         nextPageBtn.disabled = currentPage >= totalPages;
 
         if (currentFilteredChants.length === 0) {
-            resultsContainer.innerHTML = '<p class="loading-message">No results found.</p>';
+            resultsContainer.innerHTML = '<p class="loading-message">Nenhum resultado.</p>';
             return;
         }
 
@@ -104,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <h3 class="card-incipit" title="${chant.incipit}">${chant.incipit}</h3>
                 </div>
                 <div class="card-image-wrapper">
-                    <img src="https://gregobase.selapa.net/chant_img.php?id=${chant.id}" alt="Score preview for ${chant.incipit}" loading="lazy">
+                    <img src="https://gregobase.selapa.net/chant_img.php?id=${chant.id}" alt="Visualização de ${chant.incipit}" loading="lazy">
                 </div>
                 <div class="card-info">
                     <div class="card-details">
@@ -112,8 +124,8 @@ document.addEventListener('DOMContentLoaded', () => {
                             <span class="color-chip" style="background-color: ${officePartColor};"></span>
                             ${officePartName}
                         </span>
-                        <span><strong>Mode:</strong> ${chant.mode || 'N/A'}</span>
-                        <span><strong>Version:</strong> ${chant.version || 'N/A'}</span>
+                        <span><strong>Modo:</strong> ${convertToRoman(chant.mode) || 'N/A'}</span>
+                        <span><strong>Versão:</strong> ${chant.version || 'N/A'}</span>
                     </div>
                 </div>
             `;

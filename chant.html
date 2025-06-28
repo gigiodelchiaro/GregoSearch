@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chant Detail</title>
+    <title>Visualizar canto</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
     <main class="chant-detail-layout">
         <header class="chant-detail-header">
-            <h1 id="chant-incipit">Loading Chant...</h1>
-            <a href="index.html" class="back-link">← Back to Search</a>
+            <h1 id="chant-incipit">Carregando...</h1>
+            <a href="index.html" class="back-link">← Voltar para a busca</a>
         </header>
 
         <aside id="chant-metadata" class="metadata-panel">
@@ -25,12 +25,16 @@
 
         <!-- The new action buttons panel -->
         <section id="chant-actions" class="actions-panel">
-             <h2>Actions</h2>
+             <h2>Ações</h2>
              <div class="action-buttons-container">
-                <a id="gregobase-link" class="action-btn" target="_blank" rel="noopener noreferrer">View on Gregobase</a>
-                <a id="nemz-link" class="action-btn" target="_blank" rel="noopener noreferrer">Open in GABC Renderer</a>
-                <button id="download-svg-btn" class="action-btn">Download SVG</button>
-                <button id="download-gabc-btn" class="action-btn">Download GABC</button>
+                <a id="gregobase-link" class="action-btn" target="_blank" rel="noopener noreferrer">Abrir no Gregobase</a>
+                <a id="neumz-link" class="action-btn" target="_blank" rel="noopener noreferrer">Abrir no Neumz</a>
+                <a id="summit-link" class="action-btn" target="_blank" rel="noopener noreferrer">Abrir no Source and Summit</a>
+                <a id="illuminare-link" class="action-btn" target="_blank" rel="noopener noreferrer">Abrir no Illuminare</a>
+                <button id="download-svg-btn" class="action-btn">Baixar SVG</button>
+                <button id="download-gabc-btn" class="action-btn">Baixar GABC</button>
+                <button id="copy-gabc-btn" class="action-btn">Copiar GABC</button>
+                <input type="checkbox" id="clean">Limpar GABC
              </div>
         </section>
     </main>
