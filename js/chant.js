@@ -45,19 +45,19 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('No content available to copy.');
             return;
         }
-        buttonElement.textContent = 'Copying...';
+        buttonElement.textContent = 'Copiando...';
         buttonElement.disabled = true;
         try {
             await navigator.clipboard.writeText(text);
-            buttonElement.textContent = 'Copied!';
+            buttonElement.textContent = 'Copiado!';
             setTimeout(() => {
                 buttonElement.textContent = originalButtonText;
                 buttonElement.disabled = false;
             }, 1500);
         } catch (err) {
-            console.error('Failed to copy text: ', err);
-            buttonElement.textContent = 'Failed to copy!';
-            alert('Failed to copy to clipboard. This often happens if the page is not served over HTTPS or if clipboard access was denied by the browser.');
+            console.error('Falha ao copiar o texto: ', err);
+            buttonElement.textContent = 'Falha ao copiar!';
+            alert('Falha ao copiar');
             setTimeout(() => {
                 buttonElement.textContent = originalButtonText;
                 buttonElement.disabled = false;
@@ -69,18 +69,18 @@ document.addEventListener('DOMContentLoaded', () => {
     async function displayChant() {
         const urlParams = new URLSearchParams(window.location.search);
         const chantId = parseInt(urlParams.get('id'), 10);
-        if (isNaN(chantId)) { showError("Invalid chant ID."); return; }
+        if (isNaN(chantId)) { showError("ID inválido."); return; }
         try {
             const response = await fetch('data/chants.json');
-            if (!response.ok) throw new Error("Could not load database.");
+            if (!response.ok) throw new Error("Não foi possível carregar o banco de dados");
             const allChants = await response.json();
             const chant = allChants.find(c => c.id === chantId);
-            if (!chant) { showError(`Chant with ID ${chantId} not found.`); return; }
+            if (!chant) { showError(`ID ${chantId} não encontrado.`); return; }
             populateMetadata(chant);
             displayScoreImage(chant);
             setupActionButtons(chant);
         } catch (error) {
-            showError("Error loading chant data.");
+            showError("Erro ao carregar as informações");
         }
     }
     function convertToRoman(num) {
@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function displayScoreImage(chant) {
-        scoreContainer.innerHTML = `<img src="https://gregobase.selapa.net/chant_img.php?id=${chant.id}" alt="Full score for ${chant.incipit}">`;
+        scoreContainer.innerHTML = `<img src="https://gregobase.selapa.net/chant_img.php?id=${chant.id}" alt="Imagem de ${chant.incipit}">`;
     }
 
     /** MODIFIED FUNCTION **/
@@ -167,7 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // SVG Download is unaffected by GABC.
         downloadSvgBtn.addEventListener('click', async () => {
             const originalText = downloadSvgBtn.textContent;
-            downloadSvgBtn.textContent = 'Downloading...';
+            downloadSvgBtn.textContent = 'Baixando...';
             downloadSvgBtn.disabled = true;
             try {
                 const response = await fetch(`https://gregobase.selapa.net/chant_img.php?id=${chantId}`);
@@ -182,8 +182,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
             } catch (error) {
-                console.error('Download failed:', error);
-                alert('Could not download SVG. Please try right-clicking the image and "Save Image As...".');
+                console.error('Download falhou:', error);
+                alert('Não foi possível baixar o SVG.');
             } finally {
                 downloadSvgBtn.textContent = originalText;
                 downloadSvgBtn.disabled = false;
@@ -210,13 +210,13 @@ document.addEventListener('DOMContentLoaded', () => {
             copyGabcBtn.addEventListener('click', async () => {
                 const processedGabc = getProcessedGabc();
                 const fullGabc = generateGabcHeader(chant) + processedGabc;
-                await copyTextToClipboard(fullGabc, copyGabcBtn, "Copy GABC to Clipboard");
+                await copyTextToClipboard(fullGabc, copyGabcBtn, "Copiar GABC");
             });
         }
     }
 
     function showError(message) {
-        chantIncipit.textContent = "Error";
+        chantIncipit.textContent = "Erro";
         scoreContainer.innerHTML = `<p class="loading-message">${message}</p>`;
     }
     displayChant();
