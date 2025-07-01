@@ -7,17 +7,20 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-
+    
     <main class="chant-detail-layout">
         <header class="chant-detail-header">
             <h1 id="chant-incipit">Carregando...</h1>
             <a href="index.html" class="back-link">← Voltar para a busca</a>
+            <label for="render">
+                <input type="checkbox" id="render">Renderizar em tempo real
+                </label>
         </header>
-
+        
         <aside id="chant-metadata" class="metadata-panel">
             <!-- Details will be populated here -->
         </aside>
-
+        
         <!-- The main score area -->
         <section id="chant-score" class="score-panel">
             <!-- The image will be placed here by JavaScript -->
@@ -34,12 +37,20 @@
                 <button id="download-svg-btn" class="action-btn">Baixar SVG</button>
                 <button id="download-gabc-btn" class="action-btn">Baixar GABC</button>
                 <button id="copy-gabc-btn" class="action-btn">Copiar GABC</button>
+                <label for="clean">
                 <input type="checkbox" id="clean">Limpar GABC
+                </label>
+                <label for="remove">
                 <input type="checkbox" id="remove">Remover formatação adicional (Cuidado!)
+                </label>
+                <label for="line">
+                <input type="checkbox" id="line">Adicionar quebra de linha após barra dupla
+                </label>
+                <textarea id="gabc-source-hidden" style="display:none;"></textarea>
              </div>
         </section>
     </main>
-
+    <script src="js/exsurge.min.js"></script>
     <script src="js/chant.js" defer></script>
 
 </body>
