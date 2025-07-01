@@ -147,41 +147,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // This function returns the appropriate GABC score based on the checkbox state.
         const getProcessedGabc = () => {
-    if (!rawGabcScore) {
-        return '';
-    }
 
-    let processedGabc = rawGabcScore;
+            if (!rawGabcScore) {
+                return '';
+            }
 
-    if (cleanGABC.checked) {
-        processedGabc = processedGabc.replace(cleanupRegex, '');
-    }
+            let processedGabc = rawGabcScore;
 
-    if (MEGAcleanGABC.checked) {
-        processedGabc = processedGabc.replace(MEGAcleanupRegex, '');
-    }
+            if (cleanGABC.checked) {
+                processedGabc = processedGabc.replace(cleanupRegex, '');
+            }
 
-    // Fix capitalization in GABC notation
-    /*
-    This section corrects the capitalization of the first word of the GABC score.
-    For example, it transforms "KY(d)rie..." into "Ky(d)rie...".
-    The logic applies this change only once to the very first lyrical element found.
-    */
+            if (MEGAcleanGABC.checked) {
+                processedGabc = processedGabc.replace(MEGAcleanupRegex, '');
+            }
 
-    // Define a regex to find the first word if it's in ALL CAPS (2 or more letters)
-    // and followed by a GABC note parenthesis.
-    const firstWordRegex = /([A-Z]{2,})(\s*\()/;
-    // Use .replace() directly on the string. Without a global flag, it only runs
-    // on the very first match it finds, which is the desired behavior.
-    processedGabc = processedGabc.replace(firstWordRegex, (match, word, spaceAndParen) => {
-        // Capitalize the first letter and lowercase the rest.
-        const correctedWord = word.charAt(0).toUpperCase() + word.substring(1).toLowerCase();
-        
-        // Reconstruct the string with the corrected word and the following parenthesis.
-        return `${correctedWord}${spaceAndParen}`;
-    });
-    return processedGabc;
-};
+            // This function and regex fixes capitalization of words.
+            // "(f3) EC(ce!fg)CE(f.) *(,) ad(fe~)vé(f!gwh_f)nit(f.)"
+            // becomes
+            // "(f3) Ec(ce!fg)ce(f.) *(,) ad(fe~)vé(f!gwh_f)nit(f.)"
+            const regex = /^((?:[^A-Z]|\([^)]*\))*)(([A-Z][^,:\s]*))/;
+            
+            const finalGabc = processedGabc.replace(regex, (fullMatch, prefix, wordBlock) => {
+
+                const correctedWord = wordBlock.charAt(0) + wordBlock.substring(1).toLowerCase();
+                // Re-assemble the string with the corrected word block.
+                return prefix + correctedWord;
+            });
+
+            return finalGabc;
+        };
 
         if (rawGabcScore) {
             // This function updates the external links based on the current GABC score.
