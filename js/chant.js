@@ -13,10 +13,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const downloadSvgBtn = document.getElementById('download-svg-btn');
     const downloadGabcBtn = document.getElementById('download-gabc-btn');
     const cleanGABC = document.getElementById('clean'); // checkbox
+    const MEGAcleanGABC = document.getElementById('remove'); // checkbox
     const copyGabcBtn = document.getElementById('copy-gabc-btn');
 
     // Regex to remove accents, underscores, brackets, and periods within parentheses.
     const cleanupRegex = /'\d?|_|\[.+?\]|\.(?<!\([^(])(?=[^(]*?\))\d?/gm;
+    const MEGAcleanupRegex = /<i>i+j.<\/i>|\*|<[^>]*>|~|\{|\}/gm;
 
     // --- Helper functions ---
     const officePartMap = { 'al': 'Alleluia', 'an': 'Antiphona', 'ca': 'Canticum', 'co': 'Communio', 'gr': 'Graduale', 'hy': 'Hymnus', 'im': 'Improperia', 'in': 'Introitus', 'ky': 'Kyriale', 'of': 'Offertorium', 'or': 'Toni Communes', 'pa': 'Prosa', 'pr': 'Praefationes', 'ps': 'Psalmus', 'rb': 'Responsorium breve', 're': 'Responsorium', 'rh': 'Rhythmus', 'se': 'Sequentia', 'su': 'Supplicatio', 'tp': 'Tropa', 'tr': 'Tractus', 'va': 'Varia' };
@@ -145,9 +147,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // This function returns the appropriate GABC score based on the checkbox state.
         const getProcessedGabc = () => {
-            if (!rawGabcScore) return '';
-            return cleanGABC.checked ? rawGabcScore.replace(cleanupRegex, '') : rawGabcScore;
-        };
+    if (!rawGabcScore) {
+        return '';
+    }
+
+    let processedGabc = rawGabcScore;
+
+    if (cleanGABC.checked) {
+        processedGabc = processedGabc.replace(cleanupRegex, '');
+    }
+
+    if (MEGAcleanGABC.checked) {
+        processedGabc = processedGabc.replace(MEGAcleanupRegex, '');
+    }
+
+    // Fix capitalization in GABC notation
+    /*
+    This section corrects the capitalization of the first word of the GABC score.
+    For example, it transforms "KY(d)rie..." into "Ky(d)rie...".
+    The logic applies this change only once to the very first lyrical element found.
+    */
+
+    // Define a regex to find the first word if it's in ALL CAPS (2 or more letters)
+    // and followed by a GABC note parenthesis.
+    const firstWordRegex = /([A-Z]{2,})(\s*\()/;
+    // Use .replace() directly on the string. Without a global flag, it only runs
+    // on the very first match it finds, which is the desired behavior.
+    processedGabc = processedGabc.replace(firstWordRegex, (match, word, spaceAndParen) => {
+        // Capitalize the first letter and lowercase the rest.
+        const correctedWord = word.charAt(0).toUpperCase() + word.substring(1).toLowerCase();
+        
+        // Reconstruct the string with the corrected word and the following parenthesis.
+        return `${correctedWord}${spaceAndParen}`;
+    });
+    return processedGabc;
+};
 
         if (rawGabcScore) {
             // This function updates the external links based on the current GABC score.
@@ -164,6 +198,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // 2. Add a listener to the checkbox to update links whenever it's toggled.
             cleanGABC.addEventListener('change', updateExternalLinks);
+            MEGAcleanGABC.addEventListener('change', updateExternalLinks);
 
             // Show all GABC-related controls.
             neumzLink.style.display = 'inline-block';
@@ -171,9 +206,8 @@ document.addEventListener('DOMContentLoaded', () => {
             illuminareLink.style.display = 'inline-block';
             copyGabcBtn.style.display = 'inline-block';
             downloadGabcBtn.style.display = 'inline-block';
-            if (cleanGABC.parentElement) {
-                cleanGABC.parentElement.style.display = 'inline-block'; // Show checkbox
-            }
+            cleanGABC.parentElement.style.display = 'inline-block'
+            MEGAcleanGABC.parentElement.style.display = 'inline-block'
 
         }
 
