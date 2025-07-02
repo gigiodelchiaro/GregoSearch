@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const neumzLink = document.getElementById('neumz-link');
     const summitLink = document.getElementById('summit-link');
     const illuminareLink = document.getElementById('illuminare-link');
+    const benedictusLink = document.getElementById('benedictus-link');
     const downloadSvgBtn = document.getElementById('download-svg-btn');
     const downloadGabcBtn = document.getElementById('download-gabc-btn');
     const copyGabcBtn = document.getElementById('copy-gabc-btn');
@@ -109,6 +110,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateScoreDisplay() {
         if (!currentChant) return;
 
+        
+
         if (renderInRealTime.checked) {
             renderGabcWithExsurge(currentChant);
         } else {
@@ -156,7 +159,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Setup and Helper Functions (Minor modifications) ---
 
     function populateMetadata(chant) {
-        // ... (this function is unchanged)
         pageTitle.textContent = chant.incipit;
         chantIncipit.textContent = chant.incipit;
         const details = {
@@ -179,6 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const incipit = chant.incipit || 'chant';
         const rawGabcScore = extractGabcScore(chant);
         gregobaseLink.href = `https://gregobase.selapa.net/chant.php?id=${chantId}`;
+        downloadSvgBtn.style.display = 'block'; // Always show SVG download button
 
         // This function updates the external links based on the current GABC score.
         const updateExternalLinks = () => {
@@ -187,6 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
             neumzLink.href = `https://scrib.io/#q=${encodedGabc}`;
             summitLink.href = `https://editor.sourceandsummit.com/alpha/#annotation%3A%20%0A%25%25%0A${encodedGabc}`;
             illuminareLink.href = `https://editor.sourceandsummit.com/legacy/#annotation%3A%20%0A%25%25%0A${encodedGabc}`;
+            benedictusLink.href = `https://benedictus.liturgiacantada.com.br?gabc=${encodedGabc}`;
         };
 
         // NEW: This combined function updates links AND re-renders the score if needed.
@@ -229,13 +233,88 @@ document.addEventListener('DOMContentLoaded', () => {
             URL.revokeObjectURL(url);
         });
         
-        // ... (Other button listeners like SVG download and Copy GABC are mostly unchanged) ...
+        // GABC Copy: Check the box state AT THE TIME OF CLICK.
+        copyGabcBtn.addEventListener('click', () => {
+            const processedGabc = getProcessedGabc(rawGabcScore);
+            const fullGabc = generateGabcHeader(chant) + processedGabc;
+            copyTextToClipboard(fullGabc, copyGabcBtn, 'Copiado!');
+        });
+
+        // SVG Download: Handles both Exsurge-rendered and Gregobase images.
+        downloadSvgBtn.addEventListener('click', async () => {
+            let svgSource = '';
+            let filename = `${incipit.replace(/[^a-z0-9]/gi, '_')}.svg`;
+
+            if (renderInRealTime.checked) {
+                // Get SVG from Exsurge.js rendering
+                const svg = scoreContainer.querySelector('svg');
+                if (!svg) {
+                    alert('Nenhum SVG encontrado para baixar.');
+                    return;
+                }
+                const serializer = new XMLSerializer();
+                svgSource = serializer.serializeToString(svg);
+                // Add namespaces for proper rendering if missing
+                if (!svgSource.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)) {
+                    svgSource = svgSource.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
+                }
+                if (!svgSource.match(/^<svg[^>]+"http\:\/\/www\.w3\.org\/1999\/xlink"/)) {
+                    svgSource = svgSource.replace(/^<svg/, '<svg xmlns:xlink="http://www.w3.org/1999/xlink"');
+                }
+
+            } else {
+                // Fetch SVG directly from Gregobase
+                const gregobaseSvgUrl = `https://gregobase.selapa.net/chant_img.php?id=${chantId}`;
+                try {
+                    const response = await fetch(gregobaseSvgUrl);
+                    if (!response.ok) throw new Error('Erro ao buscar o SVG');
+                    svgSource = await response.text();
+                } catch (error) {
+                    alert(`Erro ao baixar o SVG: ${error.message}`);
+                    console.error('Erro ao baixar o SVG:', error);
+                    return;
+                }
+            }
+
+            const blob = new Blob([svgSource], { type: 'image/svg+xml;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
     }
     
     // --- Other Unchanged Helper Functions ---
-    function convertToRoman(num) { /* ...unchanged... */ }
-    async function copyTextToClipboard(text, buttonElement, originalButtonText) { /* ...unchanged... */ }
-    function showError(message) { /* ...unchanged... */ }
+    function convertToRoman(num) {
+        if (isNaN(num) || num < 1 || num > 8) return num;
+        const roman = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII"];
+        return roman[num - 1];
+    }
+
+    async function copyTextToClipboard(text, buttonElement, successMessage) {
+        const originalButtonText = buttonElement.textContent;
+        buttonElement.textContent = successMessage;
+        try {
+            await navigator.clipboard.writeText(text);
+        } catch (err) {
+            console.error('Failed to copy text: ', err);
+            buttonElement.textContent = 'Error!';
+        }
+        setTimeout(() => {
+            buttonElement.textContent = originalButtonText;
+        }, 2000);
+    }
+
+    function showError(message) {
+        pageTitle.textContent = "Erro";
+        chantIncipit.textContent = 'Erro';
+        metadataContainer.innerHTML = '';
+        scoreContainer.innerHTML = `<p class="no-results-message">${message}</p>`;
+    }
     
     // --- Add listener for the main render toggle ---
     renderInRealTime.addEventListener('change', updateScoreDisplay);

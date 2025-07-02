@@ -362,3 +362,5 @@ input[type="text"], select { width: 100%;
  }
 #download-svg-link:hover { background-color: #5a6268;
  }
+#download-svg-btn { display: block !important;
+ }
