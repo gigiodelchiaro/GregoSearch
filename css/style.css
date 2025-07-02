@@ -364,8 +364,3 @@ input[type="text"], select { width: 100%;
  }
 #download-svg-btn { display: block !important;
  }
-
- iframe {
-    width: 100%;
-    height: 100%;
- }
