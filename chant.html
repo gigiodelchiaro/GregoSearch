@@ -23,7 +23,8 @@
         
         <!-- The main score area -->
         <section id="chant-score" class="score-panel">
-            <!-- The image will be placed here by JavaScript -->
+            <img id="pre-render" src="https://gregobase.selapa.net/chant_img.php?id=${chant.id}" alt="Imagem de ${chant.incipit}">
+            <iframe id="Benedictus"></iframe>
         </section>
 
         <!-- The new action buttons panel -->
@@ -47,11 +48,11 @@
                 <label for="line">
                 <input type="checkbox" id="line">Adicionar quebra de linha após barra dupla
                 </label>
-                <textarea id="gabc-source-hidden" style="display:none;"></textarea>
+                
              </div>
         </section>
     </main>
-    <script src="js/exsurge.min.js"></script>
+    
     <script src="js/chant.js" defer></script>
 
 </body>

@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const chantIncipit = document.getElementById('chant-incipit');
     const metadataContainer = document.getElementById('chant-metadata');
     const scoreContainer = document.getElementById('chant-score'); // Used for both image and Exsurge SVG
-    const gabcSourceTextarea = document.getElementById('gabc-source-hidden'); // Required for Exsurge
+    
     const pageTitle = document.querySelector('title');
 
     // Action Buttons & Checkboxes
@@ -18,6 +18,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const downloadGabcBtn = document.getElementById('download-gabc-btn');
     const copyGabcBtn = document.getElementById('copy-gabc-btn');
 
+    const benedictusIframe = document.getElementById('Benedictus');
+    const preRenderSVG = document.getElementById('pre-render');
     // Checkboxes that modify GABC
     const cleanGABC = document.getElementById('clean');
     const MEGAcleanGABC = document.getElementById('remove');
@@ -106,52 +108,16 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // --- Display Logic ---
 
-    // NEW: Central function to decide HOW to display the score
     function updateScoreDisplay() {
         if (!currentChant) return;
 
-        
-
         if (renderInRealTime.checked) {
-            renderGabcWithExsurge(currentChant);
+            benedictusIframe.style.display = 'block';
+            preRenderSVG.style.display = 'none';
         } else {
-            displayScoreImage(currentChant);
-        }
-    }
-
-    // OLD WAY: Display pre-rendered image
-    function displayScoreImage(chant) {
-        scoreContainer.innerHTML = `<img src="https://gregobase.selapa.net/chant_img.php?id=${chant.id}" alt="Imagem de ${chant.incipit}">`;
-    }
-
-    // NEW WAY: Render score with Exsurge.js
-    function renderGabcWithExsurge(chant) {
-        const rawGabcScore = extractGabcScore(chant);
-        const processedGabc = getProcessedGabc(rawGabcScore); // Use the processed GABC!
-
-        if (!processedGabc || !window.exsurge) {
-            scoreContainer.innerHTML = '<p class="no-results-message">Partitura não disponível ou a biblioteca Exsurge falhou ao carregar.</p>';
-            return;
-        }
-
-        try {
-            scoreContainer.innerHTML = '<p class="loading-message">Renderizando partitura...</p>'; // Loading indicator
-
-            // Place the final GABC code into our hidden textarea.
-            gabcSourceTextarea.value = processedGabc;
-
-            const ctxt = new exsurge.ChantContext();
-            const mappings = exsurge.Gabc.createMappingsFromSource(ctxt, gabcSourceTextarea.value);
-            const score = new exsurge.ChantScore(ctxt, mappings, true);
-
-            score.performLayoutAsync(ctxt, () => {
-                score.layoutChantLines(ctxt, scoreContainer.clientWidth, () => {
-                    scoreContainer.innerHTML = score.createSvg(ctxt);
-                });
-            });
-        } catch(e) {
-            scoreContainer.innerHTML = `<p class="no-results-message">Erro ao renderizar a partitura. O código GABC pode estar malformado.</p>`;
-            console.error("GABC rendering error:", e);
+            preRenderSVG.src = `https://gregobase.selapa.net/chant_img.php?id=${currentChant.id}`;
+            preRenderSVG.style.display = 'block';
+            benedictusIframe.style.display = 'none';
         }
     }
 
@@ -185,13 +151,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // This function updates the external links based on the current GABC score.
         const updateExternalLinks = () => {
-            const processedGabc = getProcessedGabc(rawGabcScore);
-            const encodedGabc = encodeURIComponent(processedGabc);
-            neumzLink.href = `https://scrib.io/#q=${encodedGabc}`;
-            summitLink.href = `https://editor.sourceandsummit.com/alpha/#annotation%3A%20%0A%25%25%0A${encodedGabc}`;
-            illuminareLink.href = `https://editor.sourceandsummit.com/legacy/#annotation%3A%20%0A%25%25%0A${encodedGabc}`;
-            benedictusLink.href = `https://benedictus.liturgiacantada.com.br?gabc=${encodedGabc}`;
-        };
+        const processedGabc = getProcessedGabc(rawGabcScore);
+        const encodedGabc = encodeURIComponent(processedGabc);
+        const newBenedictusSrc = `https://benedictus.liturgiacantada.com.br/#gabc=%0A%25%25%0A${encodedGabc}`;
+
+        // Update other links
+        neumzLink.href = `https://scrib.io/#q=${encodedGabc}`;
+        summitLink.href = `https://editor.sourceandsummit.com/alpha/#annotation%3A%20%0A%25%25%0A${encodedGabc}`;
+        illuminareLink.href = `https://editor.sourceandsummit.com/legacy/#annotation%3A%20%0A%25%25%0A${encodedGabc}`;
+        benedictusLink.href = newBenedictusSrc;
+
+        // --- Refresh the iframe ---
+        // 1. Unload the current content
+        benedictusIframe.src = 'about:blank';
+
+        // 2. Schedule the new content to load
+        setTimeout(() => {
+            benedictusIframe.src = newBenedictusSrc;
+        }, 0); // A timeout of 0ms is enough to let the browser process the 'about:blank' change first
+    };
 
         // NEW: This combined function updates links AND re-renders the score if needed.
         const updateAll = () => {
@@ -315,6 +293,9 @@ document.addEventListener('DOMContentLoaded', () => {
         metadataContainer.innerHTML = '';
         scoreContainer.innerHTML = `<p class="no-results-message">${message}</p>`;
     }
+    
+    // --- Add listener for the main render toggle ---
+    
     
     // --- Add listener for the main render toggle ---
     renderInRealTime.addEventListener('change', updateScoreDisplay);
