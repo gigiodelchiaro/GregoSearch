@@ -190,7 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
             neumzLink.href = `https://scrib.io/#q=${encodedGabc}`;
             summitLink.href = `https://editor.sourceandsummit.com/alpha/#annotation%3A%20%0A%25%25%0A${encodedGabc}`;
             illuminareLink.href = `https://editor.sourceandsummit.com/legacy/#annotation%3A%20%0A%25%25%0A${encodedGabc}`;
-            benedictusLink.href = `https://benedictus.liturgiacantada.com.br?gabc=${encodedGabc}`;
+            benedictusLink.href = `https://benedictus.liturgiacantada.com.br/#gabc=%0A%25%25%0A${encodedGabc}`;
         };
 
         // NEW: This combined function updates links AND re-renders the score if needed.
