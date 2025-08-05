@@ -1,28 +1,29 @@
 # GregoSearch
 
-GregoSearch é uma interface de busca moderna e poderosa para o [GregoBase](http://gregobase.selapa.net), um dos maiores bancos de dados de partituras de canto gregoriano.
+[Read this in Portuguese (pt-br)](docs/pt-br.md)
 
-O objetivo deste projeto é oferecer uma experiência de usuário aprimorada ao pesquisar o extenso acervo do GregoBase, fornecendo filtros robustos e uma interface limpa e reativa para ajudar músicos, liturgistas, estudiosos e entusiastas a encontrar e a trabalhar com partituras de cantos gregorianos de forma eficiente.
+GregoSearch is a modern and powerful search interface for [GregoBase](http://gregobase.selapa.net), one of the largest databases of Gregorian chant scores.
 
-**Acesse a aplicação web em: [busca.liturgiacantada.com.br](https://busca.liturgiacantada.com.br)**
+The goal of this project is to offer an enhanced user experience when searching GregoBase's extensive collection, providing robust filters and a clean, reactive interface to help musicians, liturgists, scholars, and enthusiasts find and work with Gregorian chant scores efficiently.
 
-## Imagens
-![alt text](main.png)
-![alt text](chant.png)
+**Access the web application at: [busca.liturgiacantada.com.br](https://busca.liturgiacantada.com.br)**
 
+## Images
+![Homepage interface](docs/images/main.png)
+![Page after clicking on a chant](docs/images/chant.png)
 
-## Funcionalidades
+## Features
 
-*   **Busca por Título (Incipit):** Encontre cantos rapidamente pelo seu texto inicial.
-*   **Filtros Avançados:** Refine sua busca por **Parte do Ofício** (e.g., Introito, Alleluia, Hino) e por **Modo** (e.g., Modo I, Modo VIII).
-*   **Visualização Integrada:** Visualize a partitura do canto diretamente na interface.
-*   **Ações e Exportação:**
-    *   Abra a partitura original diretamente no GregoBase.
-    *   Visualize em outras plataformas como Neumz e Source and Summit.
-    *   Faça o download da partitura como imagem vetorial (SVG).
-    *   Faça o download ou copie o código-fonte da notação no formato **GABC**.
-    *   Acesse ferramentas para limpar e formatar o código GABC.
+*   **Search by Title (Incipit):** Quickly find chants by their initial text.
+*   **Advanced Filters:** Refine your search by **Part of the Office** (e.g., Introit, Alleluia, Hymn) and by **Mode** (e.g., Mode I, Mode VIII).
+*   **Integrated Viewing:** View the chant score directly within the interface.
+*   **Actions and Export:**
+    *   Open the original score directly in GregoBase.
+    *   View on other platforms like Neumz and Source and Summit.
+    *   Download the score as a vector image (SVG).
+    *   Download or copy the notation source code in **GABC** format.
+    *   Access tools to clean and format GABC code.
 
-## Como Contribuir
+## How to Contribute
 
-Contribuições para melhorar o GregoSearch são muito bem-vindas. Sinta-se à vontade para abrir uma *issue* para relatar um bug ou sugerir uma nova funcionalidade, ou um *pull request* com melhorias no código.
+Contributions to improve GregoSearch are very welcome. Feel free to open an *issue* to report a bug or suggest a new feature, or a *pull request* with code improvements.
