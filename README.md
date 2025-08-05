@@ -26,9 +26,3 @@ O objetivo deste projeto é oferecer uma experiência de usuário aprimorada ao 
 ## Como Contribuir
 
 Contribuições para melhorar o GregoSearch são muito bem-vindas. Sinta-se à vontade para abrir uma *issue* para relatar um bug ou sugerir uma nova funcionalidade, ou um *pull request* com melhorias no código.
-
-## Licença
-
-Este projeto está licenciado sob a [Licença Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0).  
-Você pode usá-lo, modificá-lo e distribuí-lo livremente, desde que respeite os termos da licença.  
-Consulte o arquivo `LICENSE` para mais detalhes.
