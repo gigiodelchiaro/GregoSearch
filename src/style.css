@@ -364,3 +364,39 @@ input[type="text"], select { width: 100%;
  }
 #download-svg-btn { display: block !important;
  }
+
+/* Language Switcher Styles */
+#language-switcher {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.lang-switcher-btn {
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  padding: 8px 15px;
+  margin: 0 5px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 0.9em;
+  transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+}
+
+.lang-switcher-btn:hover {
+  background-color: #e0e0e0;
+  border-color: #bbb;
+}
+
+.lang-switcher-btn.active {
+  background-color: #007bff; /* A common blue for active state */
+  color: white;
+  border-color: #007bff;
+  cursor: default;
+}
+
+.lang-switcher-btn.active:hover {
+  background-color: #007bff; /* Keep same background on hover for active */
+  border-color: #007bff;
+}
