@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const addLineBreak = document.getElementById('line') as HTMLInputElement;
   const renderInRealTime = document.getElementById('render') as HTMLInputElement;
 
-  const cleanupRegex = /'\d?|_|\[.+\]|\.(?<!\([^(])(?=[^(]*?\))\d?/gm;
+  const cleanupRegex = /'\d?|_|\[.+?\]|\.(?<!\([^(])(?=[^(]*?\))\d?/gm;
   const MEGAcleanupRegex = /<i>i+j.<\/i>|\*|<[^>]*>|~|\{|\}/gm;
 
   const officePartMap: { [key: string]: string } = { 'al': 'Alleluia', 'an': 'Antiphona', 'ca': 'Canticum', 'co': 'Communio', 'gr': 'Graduale', 'hy': 'Hymnus', 'im': 'Improperia', 'in': 'Introitus', 'ky': 'Kyriale', 'of': 'Offertorium', 'or': 'Toni Communes', 'pa': 'Prosa', 'pr': 'Praefationes', 'ps': 'Psalmus', 'rb': 'Responsorium breve', 're': 'Responsorium', 'rh': 'Rhythmus', 'se': 'Sequentia', 'su': 'Supplicatio', 'tp': 'Tropa', 'tr': 'Tractus', 'va': 'Varia' };
